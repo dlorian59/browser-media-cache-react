@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-11-04T18:35:39.720Z",
+  "reports": [
+    {
+      "browser": "chromium",
+      "version": "156.0.8078.4",
+      "result": {
+        "status": "PASS",
+        "calls": 6,
+        "created": 4,
+        "revoked": 4,
+        "activeHandles": 0,
+        "scenarios": [
+          "StrictMode sharing",
+          "partial unmount",
+          "account switch",
+          "logout",
+          "error/idle slots",
+          "late completion",
+          "caller-owned cache reuse"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "browser": "firefox",
+      "version": "156.0",
+      "result": {
+        "status": "PASS",
+        "calls": 6,
+        "created": 4,
+        "revoked": 4,
+        "activeHandles": 0,
+        "scenarios": [
+          "StrictMode sharing",
+          "partial unmount",
+          "account switch",
+          "logout",
+          "error/idle slots",
+          "late completion",
+          "caller-owned cache reuse"
+        ]
+      },
+      "errors": []
+    }
+  ]
+}
