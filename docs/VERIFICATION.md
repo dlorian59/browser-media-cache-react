@@ -5,13 +5,21 @@
 Local validation on 2026-11-04. React adapter source is new and reuses the core's
 existing useMedia hook. No core lifecycle code was changed for this integration.
 
+OSS-009 example/reference validation on 2026-11-05 retains the same public API.
+The current packed consumer contains 20 files; 102 relative links/anchors resolve.
+SearchableGallery and ImageStates compile with the existing strict configuration.
+Both headless browsers verified filtering, immediate account/item replacement,
+explicit retry, image ref and native load handling alongside the seven existing
+lifecycle scenarios. No FPS, response-time or comparative performance claim is made.
+
 | Check | Observed result |
 |---|---|
-| Strict TypeScript build and example compilation | Pass; public declarations, Gallery.tsx and create-cache.ts |
+| Strict TypeScript build and example compilation | Pass; public declarations, Gallery.tsx, create-cache.ts, SearchableGallery.tsx and ImageStates.tsx |
 | SSR | 2 tests: loading/idle output without acquisition, and explicit missing-provider error |
 | Chromium 156.0.8078.4 / React 19.3.1 | 7 lifecycle scenarios passed; 4 URLs created and revoked, zero handles at completion |
 | Firefox 156.0 / React 19.3.1 | Same 7 scenarios passed; 4 URLs created and revoked, zero handles at completion |
 | Functional gallery | Shared avatar URL, failure fallback, account switch and logout controls exercised |
+| New example controls | Search filtering, current account captions/URLs, explicit retry and native image ref/load passed in both tested browsers |
 | Isolated artifact consumer | Actual core + adapter + React tarballs installed; SSR and strict declarations pass, alt is required and src cannot bypass cache ownership |
 | Client entry | use client directive remains in the packed JavaScript; no framework-specific integration claimed |
 | Packed documentation | Relative file links and section anchors are checked in the installed artifact |

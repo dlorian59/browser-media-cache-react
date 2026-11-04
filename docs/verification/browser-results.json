@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-04T18:35:39.720Z",
+  "timestamp": "2026-11-04T19:08:45.833Z",
   "reports": [
     {
       "browser": "chromium",
@@ -19,6 +19,12 @@
           "late completion",
           "caller-owned cache reuse"
         ]
+      },
+      "examples": {
+        "searchFilter": "PASS",
+        "immediateAccountReplacement": "PASS",
+        "explicitRetry": "PASS",
+        "imageRefAndNativeLoad": "PASS"
       },
       "errors": []
     },
@@ -40,6 +46,12 @@
           "late completion",
           "caller-owned cache reuse"
         ]
+      },
+      "examples": {
+        "searchFilter": "PASS",
+        "immediateAccountReplacement": "PASS",
+        "explicitRetry": "PASS",
+        "imageRefAndNativeLoad": "PASS"
       },
       "errors": []
     }

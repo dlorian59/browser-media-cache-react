@@ -21,15 +21,28 @@ try {
       page.on('pageerror',error=>errors.push(String(error)));
       page.on('console',message=>{if(message.type()==='error') errors.push(message.text());});
       await page.goto(url);
-      await page.waitForFunction(()=>document.querySelectorAll('#app img').length===2);
-      assert.equal(await page.locator('#app img').evaluateAll(images=>images[0].src===images[1].src),true);
+      const gallery=page.getByRole('region',{name:'Profile and attachments'});
+      await page.waitForFunction(()=>document.querySelectorAll('section[aria-label="Profile and attachments"] img').length===2);
+      assert.equal(await gallery.locator('img').evaluateAll(images=>images[0].src===images[1].src),true);
       const attachment=page.getByRole('link',{name:'Download notes'});
       await attachment.waitFor();
       assert.equal(await page.evaluate(async url=>await (await fetch(url)).text(),await attachment.getAttribute('href')),'Downloadable attachment');
+      await page.getByRole('button',{name:'Retry preview'}).click();
+      await page.getByText('Preview decoded',{exact:true}).waitFor();
+      await page.getByRole('button',{name:'Inspect image'}).click();
+      await page.getByText('96 pixels wide',{exact:true}).waitFor();
+      const search=page.getByRole('region',{name:'Search attachments'});
+      await page.getByLabel('Filter attachments').fill('duplicate');
+      await page.waitForFunction(()=>document.querySelectorAll('section[aria-label="Search attachments"] li').length===1);
+      assert.match(await search.innerText(),/alice duplicate/);
+      const previousUrl=await gallery.locator('img').first().getAttribute('src');
       await page.getByRole('button',{name:'Toggle failed image'}).click();
       await page.getByText('Image could not be loaded',{exact:true}).waitFor();
       await page.getByRole('button',{name:'Switch account'}).click();
       await page.waitForFunction(()=>document.querySelector('#app strong')?.textContent==='bob');
+      assert.match(await search.innerText(),/bob duplicate/);
+      assert.doesNotMatch(await search.innerText(),/alice/);
+      assert.equal(await page.locator('#app img').evaluateAll((images,old)=>images.some(image=>image.src===old),previousUrl),false);
       await page.getByRole('button',{name:'Sign out'}).click();
       assert.equal(await page.locator('#app img').count(),0);
       await page.getByRole('button',{name:'Run lifecycle checks'}).click();
@@ -37,7 +50,8 @@ try {
       const result=await page.evaluate(()=>window.componentResult);
       assert.equal(result.status,'PASS',JSON.stringify(result)); assert.deepEqual(errors,[]);
       await page.screenshot({path:`output/playwright/${name}.png`,fullPage:true});
-      reports.push({browser:name,version:browser.version(),result,errors});
+      reports.push({browser:name,version:browser.version(),result,
+        examples:{searchFilter:'PASS',immediateAccountReplacement:'PASS',explicitRetry:'PASS',imageRefAndNativeLoad:'PASS'},errors});
       console.log(`${name} ${browser.version()}: ${result.scenarios.length} lifecycle scenarios PASS, ${result.created}/${result.revoked} URLs`);
     } finally { await browser.close(); }
   }

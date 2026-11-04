@@ -14,6 +14,10 @@ Render shared avatars and attachment previews without managing object URLs in ev
 | Use custom rendering with the same lifecycle | [useCachedMedia / MediaStatus](examples/Gallery.tsx) |
 | Configure authenticated loading and persistence | [Application-owned cache](examples/create-cache.ts) |
 | Change accounts and remove persisted account media | [Scope and logout guide](docs/0.1.0/en.md#scope-and-logout) |
+| Defer result rendering while typing | [SearchableGallery](examples/SearchableGallery.tsx) |
+| Explicit retry, disabled state and native image ref/events | [ImageStates](examples/ImageStates.tsx) |
+
+[All props, defaults and mechanisms](docs/0.1.0/reference.en.md) · [Troubleshooting](docs/0.1.0/reference.en.md#troubleshooting)
 
 ```tsx
 import { MediaCacheProvider, CachedImage } from '@59alex/browser-media-cache-react';
@@ -62,6 +66,10 @@ Source and examples are local. npm publication and public creation of this new r
 | Написать своё отображение с тем же lifecycle | [useCachedMedia / MediaStatus](examples/Gallery.tsx) |
 | Настроить загрузку с аутентификацией и хранилище | [Кэш приложения](examples/create-cache.ts) |
 | Сменить аккаунт и удалить его сохранённые медиа | [Область и logout](docs/0.1.0/ru.md#область-и-logout) |
+| Отложить render результатов во время ввода | [SearchableGallery](examples/SearchableGallery.tsx) |
+| Явный повтор, disabled, ref и события img | [ImageStates](examples/ImageStates.tsx) |
+
+[Все props, defaults и механизмы](docs/0.1.0/reference.ru.md) · [Устранение проблем](docs/0.1.0/reference.ru.md#устранение-проблем)
 
 ```tsx
 import { MediaCacheProvider, CachedImage } from '@59alex/browser-media-cache-react';

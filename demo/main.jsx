@@ -4,16 +4,27 @@ import { flushSync } from 'react-dom';
 import { MediaCache } from '@59alex/browser-media-cache';
 import { MediaCacheProvider, CachedImage, MediaBoundary } from '../dist/index.js';
 import { Gallery } from '../examples/Gallery.js';
+import { SearchableGallery } from '../examples/SearchableGallery.js';
+import { ImageStates } from '../examples/ImageStates.js';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const fixture = namespace => new Blob([`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="96" height="96" fill="${namespace === 'alice' ? '#367b8a' : '#765ab5'}"/><text x="12" y="54" fill="white">${namespace}</text></svg>`], { type: 'image/svg+xml' });
 let loads = 0;
+const failedOnce = new Set();
+const searchItems = Object.fromEntries(['alice', 'bob'].map(account => [account, [
+  { id: 'original', mediaKey: 'avatar:v1', label: `${account} original` },
+  { id: 'duplicate', mediaKey: 'avatar:v1', label: `${account} duplicate` },
+]]));
 // EN: The application creates and owns this cache outside React rendering.
 // RU: Приложение создаёт этот кэш и владеет им вне React render.
 const cache = new MediaCache({ load: async ({namespace,key,signal}) => {
   loads++; await sleep(40); signal.throwIfAborted();
   if (key === 'missing') throw new Error('Synthetic missing image');
+  if (key === 'retry-once' && !failedOnce.has(namespace)) {
+    failedOnce.add(namespace);
+    throw new Error('Synthetic transient failure');
+  }
   return key === 'notes:v1' ? new Blob(['Downloadable attachment'], {type:'text/plain'}) : fixture(namespace);
 }, maxEntries: 0 });
 
@@ -33,6 +44,12 @@ function App() {
     <button onClick={() => setFailure(value => !value)}>Toggle failed image</button>
     <button onClick={logout}>Sign out</button>
     {account && <><Gallery cache={cache} accountId={account}/>
+      {/* EN: Only the search text is deferred; account scope and its collection update immediately. */}
+      {/* RU: Откладывается только текст поиска; область аккаунта и его список обновляются сразу. */}
+      <SearchableGallery cache={cache} namespace={account} items={searchItems[account]} />
+      <section aria-label="Image state examples"><MediaCacheProvider cache={cache} namespace={account}>
+        <ImageStates mediaKey="retry-once" />
+      </MediaCacheProvider></section>
       {failure && <MediaCacheProvider cache={cache} namespace={account}>
         <CachedImage mediaKey="missing" alt="Missing attachment" loadingFallback={<span role="status">Loading…</span>}
           errorFallback={<span role="status">Image could not be loaded</span>}/>
