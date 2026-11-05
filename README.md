@@ -46,7 +46,7 @@ For an application, pack both built repositories and install their two tarballs 
 
 The provider never disposes caller-owned caches or clears persistence automatically. Null keys disable loading. SSR renders the loading/idle fallback without acquiring resources. Active media may exceed the core's soft memory budget; complete Blobs are cached, so this is suitable for bounded avatars/previews rather than arbitrarily large streamed files. Native image decoding errors are delivered to onError; errorFallback handles core acquisition/loading failures.
 
-Source and examples are local. npm publication and public creation of this new repository are pending; GitHub account access is currently blocked. CI is configured but no remote run is claimed.
+Source and examples are available in this repository. Build and install the local artifacts using the guide below; npm publication is pending. Check the Actions tab for current CI results.
 
 [Versioned EN guide](docs/0.1.0/en.md) · [Documentation index](docs/index.md) · [Verification](docs/VERIFICATION.md) · [MIT](LICENSE)
 
@@ -98,7 +98,7 @@ Bootstrap устанавливает зависимости по lockfile, со�
 
 Provider не уничтожает чужой кэш и не очищает хранилище автоматически. Null отключает загрузку. SSR выводит loading/idle fallback без получения ресурса. Активные медиа могут превышать мягкий бюджет ядра; кэш содержит целые Blob, поэтому подходит для ограниченных по размеру аватаров и превью. Ошибки декодирования изображения приходят в обычный onError; errorFallback обрабатывает ошибки получения и загрузки ресурса ядром.
 
-Исходники и примеры готовы локально. Публикация npm и создание этого публичного репозитория ожидают восстановления доступа к GitHub. CI настроен, удалённый запуск не заявляется.
+Исходники и примеры доступны в этом репозитории. Собирайте и устанавливайте локальные артефакты по руководству ниже; публикация npm пока не выполнена. Текущие результаты CI доступны во вкладке Actions.
 
 [Руководство RU](docs/0.1.0/ru.md) · [Все версии](docs/index.md) · [Проверки](docs/VERIFICATION.md) · [MIT](LICENSE)
 

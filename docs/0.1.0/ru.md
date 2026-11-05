@@ -35,7 +35,7 @@ npm pack
 npm install /path/to/browser-media-cache/59alex-browser-media-cache-0.1.0.tgz /path/to/browser-media-cache-react/59alex-browser-media-cache-react-0.1.0.tgz react@19.3.1 react-dom@19.3.1
 ```
 
-Это локальные артефакты. Публикация в npm не заявляется. CI получает checkout ядра и использует тот же bootstrap; удалённый запуск ожидает восстановления доступа к GitHub.
+Это локальные артефакты. Публикация в npm не заявляется. CI получает checkout ядра и использует тот же bootstrap; текущие результаты запусков доступны во вкладке Actions.
 
 ## Кэш приложения и provider
 
@@ -78,7 +78,7 @@ Components. Создавайте кэш в клиентском коде при�
 
 SSR выводит loading/idle без получения медиа, создания URL и обращения к CacheStorage. На сервере используйте состояние приложения в пределах запроса, на клиенте — стабильный кэш. Браузерные object URL не передаются через HTML. Fallback должен быть одинаковым на сервере и первом клиентском render.
 
-Повторный запуск effects в development StrictMode обрабатывается hook ядра. Проверки покрывают общую загрузку, частичный unmount, смену аккаунта, logout, ошибки, null и опоздавшие результаты. Функциональное демо находится локально в demo/main.jsx; его [ссылка на GitHub](https://github.com/dlorian59/browser-media-cache-react/blob/main/demo/main.jsx) станет доступна после создания репозитория.
+Повторный запуск effects в development StrictMode обрабатывается hook ядра. Проверки покрывают общую загрузку, частичный unmount, смену аккаунта, logout, ошибки, null и опоздавшие результаты. [Функциональное демо](https://github.com/dlorian59/browser-media-cache-react/blob/main/demo/main.jsx) находится в demo/main.jsx этого репозитория.
 
 ## Попробовать и проверить
 

@@ -35,7 +35,7 @@ npm pack
 npm install /path/to/browser-media-cache/59alex-browser-media-cache-0.1.0.tgz /path/to/browser-media-cache-react/59alex-browser-media-cache-react-0.1.0.tgz react@19.3.1 react-dom@19.3.1
 ```
 
-These are local artifacts, not a registry release. CI checks out the core repository and uses the same bootstrap; remote checkout/run is pending restored GitHub access.
+These are local artifacts, not a registry release. CI checks out the core repository and uses the same bootstrap; current run results are available in the Actions tab.
 
 ## Application cache and provider
 
@@ -78,7 +78,7 @@ required, and a specific framework integration has not been tested.
 
 SSR renders loading/idle fallbacks without acquiring media, creating URLs or touching CacheStorage. Use request-scoped application state on the server and a stable client cache during hydration. Browser object URLs are not serialized into HTML. Loading and idle fallbacks must be deterministic on the server and first client render.
 
-React development StrictMode effect replay is handled by the core hook. The runnable checks exercise shared ownership, partial unmount, account replacement, logout, failures, null keys and ignored old completions. [Functional demo source](https://github.com/dlorian59/browser-media-cache-react/blob/main/demo/main.jsx) is also present locally at demo/main.jsx; remote availability awaits repository creation.
+React development StrictMode effect replay is handled by the core hook. The runnable checks exercise shared ownership, partial unmount, account replacement, logout, failures, null keys and ignored old completions. [Functional demo source](https://github.com/dlorian59/browser-media-cache-react/blob/main/demo/main.jsx) is available at demo/main.jsx in this checkout.
 
 ## Try and verify
 
