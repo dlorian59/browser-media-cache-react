@@ -49,9 +49,33 @@ try {
       await page.waitForFunction(()=>window.componentResult);
       const result=await page.evaluate(()=>window.componentResult);
       assert.equal(result.status,'PASS',JSON.stringify(result)); assert.deepEqual(errors,[]);
+      // EN: A decoder failure must offer display retry without silently invalidating shared media.
+      // RU: Ошибка декодера должна давать повтор отображения без скрытой инвалидации общего медиа.
+      let imageLoads = 0;
+      await page.route(/\/api\/accounts\/alice\/media\/landscape%3Av1/, route => {
+        imageLoads++; return route.fulfill({ status: 200, contentType: 'image/png', body: 'not a valid PNG' });
+      });
+      await page.goto(`${url}/starter`);
+      await page.getByRole('button', { name: 'Show attachments', exact: true }).click();
+      await page.waitForFunction(() => [...document.querySelectorAll('button')].filter(button => button.textContent === 'Retry display').length === 2);
+      await page.getByRole('button', { name: 'Retry display', exact: true }).first().click();
+      await page.waitForFunction(() => [...document.querySelectorAll('button')].filter(button => button.textContent === 'Retry display').length === 2);
+      assert.equal(imageLoads, 1);
+      await page.getByRole('button', { name: 'Switch account', exact: true }).click();
+      await page.waitForFunction(() => document.querySelectorAll('main img').length === 2 && [...document.querySelectorAll('main img')].every(image => image.complete && image.naturalWidth > 0));
+      assert.equal(await page.getByRole('button', { name: 'Retry display', exact: true }).count(), 0);
+      await page.waitForFunction(() => document.querySelector('audio')?.readyState >= 1);
+      await page.locator('audio').click({ position: { x: 24, y: 25 } });
+      await page.waitForFunction(() => document.querySelector('audio')?.currentTime > 0);
+      const detachedPlayer = await page.locator('audio').elementHandle();
+      await page.getByRole('button', { name: 'Hide attachments', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('[data-owners]')?.textContent === '0');
+      assert.equal(await detachedPlayer.evaluate(player => player.paused && !player.hasAttribute('src')), true);
+      await detachedPlayer.dispose();
+      assert.deepEqual(errors, []);
       await page.screenshot({path:`output/playwright/${name}.png`,fullPage:true});
       reports.push({browser:name,version:browser.version(),result,
-        examples:{searchFilter:'PASS',immediateAccountReplacement:'PASS',explicitRetry:'PASS',imageRefAndNativeLoad:'PASS'},errors});
+        examples:{searchFilter:'PASS',immediateAccountReplacement:'PASS',explicitRetry:'PASS',imageRefAndNativeLoad:'PASS',readyPreviewDecodeRecovery:'PASS'},errors});
       console.log(`${name} ${browser.version()}: ${result.scenarios.length} lifecycle scenarios PASS, ${result.created}/${result.revoked} URLs`);
     } finally { await browser.close(); }
   }

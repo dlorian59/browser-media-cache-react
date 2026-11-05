@@ -2,6 +2,8 @@
 
 [← Versions](../index.md) · [EN](en.md) · [RU](ru.md) · [README](../../README.md)
 
+[Application walkthrough](application.en.md)
+
 [Visual component guide](visuals.en.md) — integration code, recordings and static frames for every public component and hook.
 
 [Complete props, defaults, state semantics and troubleshooting](reference.en.md)

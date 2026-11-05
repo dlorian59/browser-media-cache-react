@@ -3,5 +3,6 @@ dist/
 output/
 demo/bundle.js
 demo/visuals.js
+demo/starter.js
 *.tgz
 .playwright-cli/

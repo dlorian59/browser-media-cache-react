@@ -12,6 +12,19 @@ Both headless browsers verified filtering, immediate account/item replacement,
 explicit retry, image ref and native load handling alongside the seven existing
 lifecycle scenarios. No FPS, response-time or comparative performance claim is made.
 
+## OSS-013 ready attachment UI · 2026-11-05
+
+MediaPreview and MediaGallery reuse the original provider/useMedia lifecycle. The full AttachmentGallery.tsx compiles in the isolated package consumer, alongside existing declarations and SSR checks. Packed docs: 220 links/anchors resolved (50 files). Build, strict examples and SSR pass.
+
+Chromium 156.0.8078.4 recorded the actual HTTP gallery in EN/RU: cancel pending audio, 503 then one shared retry, decoded images with equal URLs, native audio playback progress, hide/show without new HTTP downloads and immediate account namespace replacement. GIFs are 166,275 / 187,499 bytes with PNG alternatives. Capture is repeatable with MEDIA_CAPTURE_SCENES=gallery npm run docs:capture.
+
+The existing browser suite passes in Chromium156 and Firefox158 with its seven lifecycle scenarios, plus a damaged-image response: Retry display reuses the existing Blob without an extra fetch, account replacement clears the decode-error UI, hiding removes all owners and pauses/clears the detached native player. The fixture deliberately uses local SVG and WAV; video codec coverage and physical devices were not tested.
+
+An additional clean consumer installed the current core/adapter tarballs with React 18.3.1 and React DOM 18.3.1. SSR emitted idle/loading UI without acquisition. Headless Chromium verified StrictMode, two decoded images sharing one HTTP request and object URL, then zero owners and zero retained bytes after unmount with the transient profile. This is React 18 gallery/lifecycle coverage; the full error/audio matrix above runs with React 19.3.1.
+
+Готовые карточки проверены настоящими действиями: отмена, сетевой retry, общий ресурс, воспроизведение аудио и смена аккаунта. Повтор отображения повреждённого Blob не обещает новую сетевую загрузку. Нативные кодеки и production-авторизация остаются за браузером/приложением.
+
+
 ## OSS-011 visual guide verification · 2026-11-05
 
 All four runtime exports are demonstrated through actual React components:
@@ -67,7 +80,7 @@ run used for this report. Raw screenshots remain in ignored output/playwright.
 активных handles не осталось. Это проверка владения ресурсами; производительность
 и освобождение памяти операционной системой не измерялись.
 
-React 18, Safari/WebKit, mobile browsers, real authentication/backend integration,
+React 18 was not covered by the earlier OSS-011 run; its subsequent OSS-013 consumer check is recorded above. Safari/WebKit, mobile browsers, real authentication/backend integration,
 and hydration in a specific SSR framework are not tested. The React peer range
 expresses intended compatibility. Required CacheStorage cleanup can fail, and
 namespace labels do not provide authentication. Core memory budgets remain soft

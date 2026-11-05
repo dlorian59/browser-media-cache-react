@@ -3,113 +3,159 @@
 <details name="readme-language">
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-en-dark.svg"><img src="assets/lang-en-light.svg" width="42" height="26" alt="EN"></picture></summary>
 
-**0.1.0 · React 18.3+/19 · TypeScript · ESM / ES2022 · MIT**
+**An attachment gallery with loading, retry, cancellation and native media controls already connected.** Supply your media keys and one account-scoped cache. Images, short audio and video attachments reuse downloads across views; you can still build custom UI with the lower-level components.
 
-Render shared avatars and attachment previews without managing object URLs in every component. A provider supplies an application-owned cache and account namespace. CachedImage, MediaBoundary and useCachedMedia reuse the existing core hook for acquisition, cancellation and cleanup.
+**0.1.0 · React 18.3+/19 · TypeScript · MIT** · [Application guide](docs/0.1.0/application.en.md) · [API reference](docs/0.1.0/reference.en.md)
 
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/0.1.0/visuals/provider.en.png"><img src="docs/0.1.0/visuals/provider.en.gif" width="832" alt="Two real React previews share one media load, release owners independently and reuse the cached resource."></picture>
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/0.1.0/visuals/gallery.en.png"><img src="docs/0.1.0/visuals/gallery.en.gif" width="832" alt="A real gallery cancels an audio load, retries a failed shared image, plays audio and reuses cached attachments."></picture>
 
-One load for two consumers. The recording shows unmount, cache reuse and account replacement using actual components with local fixtures. [Static frame](docs/0.1.0/visuals/provider.en.png) · [Every component in motion, with integration code](docs/0.1.0/visuals.en.md)
+[Static frame](docs/0.1.0/visuals/gallery.en.png) · [Code and interaction walkthrough](docs/0.1.0/application.en.md#try-the-gallery). The recording uses a local HTTP fixture with a deliberate first-load failure and a test audio file.
 
-| Need | API and example |
-|---|---|
-| Provide scope and share ownership between children | [MediaCacheProvider recording + code](docs/0.1.0/visuals.en.md#mediacacheprovider) |
-| Share one avatar between a profile and its attachment preview | [CachedImage recording + code](docs/0.1.0/visuals.en.md#cachedimage) · [Gallery](examples/Gallery.tsx) |
-| Render audio, video, a download link or custom content | [MediaBoundary recording + code](docs/0.1.0/visuals.en.md#mediaboundary) · [Gallery](examples/Gallery.tsx) |
-| Use custom rendering with the same lifecycle | [useCachedMedia recording + code](docs/0.1.0/visuals.en.md#usecachedmedia) · [MediaStatus](examples/Gallery.tsx) |
-| Configure authenticated loading and persistence | [Application-owned cache](examples/create-cache.ts) |
-| Change accounts and remove persisted account media | [Scope and logout guide](docs/0.1.0/en.md#scope-and-logout) |
-| Defer result rendering while typing | [SearchableGallery](examples/SearchableGallery.tsx) |
-| Explicit retry, disabled state and native image ref/events | [ImageStates](examples/ImageStates.tsx) |
+## Get started in your React application
 
-[All props, defaults and mechanisms](docs/0.1.0/reference.en.md) · [Troubleshooting](docs/0.1.0/reference.en.md#troubleshooting)
+Add these dependencies to the existing `package.json` (React 19 is also supported):
+
+```json
+{
+  "dependencies": {
+    "@59alex/browser-media-cache": "0.1.0",
+    "@59alex/browser-media-cache-react": "0.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
+```
+
+The two @59alex packages are not published to npm yet. [Local artifact setup](docs/0.1.0/en.md#local-installation) lets you evaluate these coordinates now.
 
 ```tsx
-import { MediaCacheProvider, CachedImage } from '@59alex/browser-media-cache-react';
+import { createHttpMediaCache } from '@59alex/browser-media-cache';
+import { MediaCacheProvider, MediaGallery } from '@59alex/browser-media-cache-react';
 
-// EN: cache is a stable MediaCache created once by the application.
-// RU: cache — стабильный MediaCache, созданный приложением один раз.
-<MediaCacheProvider cache={cache} namespace={accountId}>
-  <CachedImage mediaKey="avatar:42:v3" alt="Profile portrait" width={96} height={96}
-    loadingFallback={<span role="status">Loading portrait…</span>}
-    errorFallback={<span role="status">Portrait unavailable</span>} />
-</MediaCacheProvider>;
+// EN: Create once in the browser application's composition root.
+// RU: Создайте один раз в точке сборки браузерного приложения.
+const cache = createHttpMediaCache({
+  url: ({ key }) => `/api/media/${encodeURIComponent(key)}`,
+});
+
+export function Attachments({ accountId }: { accountId: string }) {
+  return <MediaCacheProvider cache={cache} namespace={accountId}>
+    <MediaGallery items={[
+      { id: 'photo', mediaKey: 'photo:42:v3', alt: 'Project sketch' },
+      { id: 'voice', mediaKey: 'voice:19:v1', kind: 'audio', alt: 'Voice attachment' },
+    ]} />
+  </MediaCacheProvider>;
+}
 ```
 
-Start from adjacent local checkouts named browser-media-cache and browser-media-cache-react:
+The backend authenticates and authorizes `/api/media/:key`. The default profile limits each HTTP response to 8 MiB and the entire load to 30 seconds. The [full source example](examples/AttachmentGallery.tsx) includes cache creation, account URLs, business metadata and logout cleanup; the [guide](docs/0.1.0/application.en.md) walks through each part.
 
-```sh
-npm run bootstrap
-npm test
-npm run demo
-npm run test:package
+## Start with one preview
+
+```tsx
+<MediaPreview mediaKey="photo:42:v3" alt="Project sketch" language="en" />
 ```
 
-Bootstrap installs the locked development dependencies, builds the core checkout, packs it, and installs that local artifact. Set MEDIA_CACHE_SOURCE to use a different core checkout. Neither package needs to exist in npm. Published peer metadata contains semver ranges, not local filesystem paths. An ordinary npm ci alone does not supply the unpublished core peer.
+Inside the same provider, this shows loading, an error with retry, and a cancel/resume control. `kind="audio"` or `kind="video"` uses browser controls without autoplay. [Preview states and codec limits](docs/0.1.0/application.en.md#one-preview-and-its-states) · [Complete gallery source](examples/AttachmentGallery.tsx).
 
-For an application, pack both built repositories and install their two tarballs together with React and React DOM. [Installation and examples](docs/0.1.0/en.md#local-installation) describe the exact sequence.
+## Show your attachment collection
 
-The provider never disposes caller-owned caches or clears persistence automatically. Null keys disable loading. SSR renders the loading/idle fallback without acquiring resources. Active media may exceed the core's soft memory budget; complete Blobs are cached, so this is suitable for bounded avatars/previews rather than arbitrarily large streamed files. Native image decoding errors are delivered to onError; errorFallback handles core acquisition/loading failures.
+```tsx
+<MediaGallery items={attachments} language="en" />
+```
 
-Source and examples are available in this repository. Build and install the local artifacts using the guide below; npm publication is pending. Check the Actions tab for current CI results.
+Give each item a stable `id`, `mediaKey`, `alt`, optional `title` and `kind`. Matching media keys share a load; cards own cancellation independently. Layout adapts to the available width. [Data and sharing](docs/0.1.0/application.en.md#your-data-and-shared-downloads) · [Full source](examples/AttachmentGallery.tsx).
 
-[Versioned EN guide](docs/0.1.0/en.md) · [Documentation index](docs/index.md) · [Verification](docs/VERIFICATION.md) · [MIT](LICENSE)
+## Keep your own design
+
+```tsx
+<MediaBoundary mediaKey="notes:v2">
+  {resource => <a href={resource.url} download>Download notes</a>}
+</MediaBoundary>
+```
+
+`CachedImage`, `MediaBoundary` and `useCachedMedia` remain available with custom fallbacks. [Every primitive in motion](docs/0.1.0/visuals.en.md) · [Complete custom UI](examples/Gallery.tsx).
+
+These are complete-Blob previews, not streaming players for large files. Native codec support belongs to the browser. A decoding failure offers **Retry display**; fetching corrected content requires a new versioned key or explicit application invalidation. Providers never dispose caller-owned caches or clear account persistence automatically. [Account lifecycle and errors](docs/0.1.0/application.en.md#account-lifetime) · [All documentation](docs/index.md) · [MIT](LICENSE).
 
 </details>
 
 <details name="readme-language" open>
 <summary><picture><source media="(prefers-color-scheme: dark)" srcset="assets/lang-ru-dark.svg"><img src="assets/lang-ru-light.svg" width="42" height="26" alt="RU"></picture></summary>
 
-**0.1.0 · React 18.3+/19 · TypeScript · ESM / ES2022 · MIT**
+**Галерея вложений с готовыми загрузкой, повтором, отменой и нативным плеером.** Передайте ключи медиа и один кэш с областью аккаунта. Изображения, короткие аудио- и видеовложения используют общие загрузки в разных представлениях; для собственного UI остаются низкоуровневые компоненты.
 
-Общие аватары и превью вложений без ручного управления object URL в каждом компоненте. Provider передаёт принадлежащий приложению кэш и namespace аккаунта. CachedImage, MediaBoundary и useCachedMedia используют существующий hook ядра для получения ресурса, отмены и очистки.
+**0.1.0 · React 18.3+/19 · TypeScript · MIT** · [Руководство для приложения](docs/0.1.0/application.ru.md) · [Справочник API](docs/0.1.0/reference.ru.md)
 
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/0.1.0/visuals/provider.ru.png"><img src="docs/0.1.0/visuals/provider.ru.gif" width="832" alt="Два React-превью разделяют одну загрузку, независимо освобождают владение и повторно используют ресурс из кэша."></picture>
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/0.1.0/visuals/gallery.ru.png"><img src="docs/0.1.0/visuals/gallery.ru.gif" width="832" alt="Настоящая галерея отменяет загрузку аудио, повторяет общую загрузку изображения после ошибки, воспроизводит аудио и использует кэш."></picture>
 
-Одна загрузка для двух потребителей. Запись настоящих компонентов с локальными данными показывает размонтирование, повторное использование кэша и смену аккаунта. [Статичный кадр](docs/0.1.0/visuals/provider.ru.png) · [Все компоненты в действии с кодом интеграции](docs/0.1.0/visuals.ru.md)
+[Статичный кадр](docs/0.1.0/visuals/gallery.ru.png) · [Код и разбор действий](docs/0.1.0/application.ru.md#попробовать-галерею). Запись использует локальный HTTP-fixture с намеренной первой ошибкой загрузки и тестовым аудио.
 
-| Задача | API и пример |
-|---|---|
-| Задать область и разделить владение между потомками | [Запись MediaCacheProvider + код](docs/0.1.0/visuals.ru.md#mediacacheprovider) |
-| Разделить аватар между профилем и превью вложения | [Запись CachedImage + код](docs/0.1.0/visuals.ru.md#cachedimage) · [Gallery](examples/Gallery.tsx) |
-| Вывести аудио, видео, ссылку скачивания или свой элемент | [Запись MediaBoundary + код](docs/0.1.0/visuals.ru.md#mediaboundary) · [Gallery](examples/Gallery.tsx) |
-| Написать своё отображение с тем же lifecycle | [Запись useCachedMedia + код](docs/0.1.0/visuals.ru.md#usecachedmedia) · [MediaStatus](examples/Gallery.tsx) |
-| Настроить загрузку с аутентификацией и хранилище | [Кэш приложения](examples/create-cache.ts) |
-| Сменить аккаунт и удалить его сохранённые медиа | [Область и logout](docs/0.1.0/ru.md#область-и-logout) |
-| Отложить render результатов во время ввода | [SearchableGallery](examples/SearchableGallery.tsx) |
-| Явный повтор, disabled, ref и события img | [ImageStates](examples/ImageStates.tsx) |
+## Подключение к React-приложению
 
-[Все props, defaults и механизмы](docs/0.1.0/reference.ru.md) · [Устранение проблем](docs/0.1.0/reference.ru.md#устранение-проблем)
+Добавьте зависимости в существующий `package.json` (React 19 также поддерживается):
+
+```json
+{
+  "dependencies": {
+    "@59alex/browser-media-cache": "0.1.0",
+    "@59alex/browser-media-cache-react": "0.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
+```
+
+Два пакета @59alex пока не опубликованы в npm. Для проверки этих координат доступна [установка локальных артефактов](docs/0.1.0/ru.md#локальная-установка).
 
 ```tsx
-import { MediaCacheProvider, CachedImage } from '@59alex/browser-media-cache-react';
+import { createHttpMediaCache } from '@59alex/browser-media-cache';
+import { MediaCacheProvider, MediaGallery } from '@59alex/browser-media-cache-react';
 
-// EN: cache is a stable MediaCache created once by the application.
-// RU: cache — стабильный MediaCache, созданный приложением один раз.
-<MediaCacheProvider cache={cache} namespace={accountId}>
-  <CachedImage mediaKey="avatar:42:v3" alt="Аватар профиля" width={96} height={96}
-    loadingFallback={<span role="status">Загружаем аватар…</span>}
-    errorFallback={<span role="status">Аватар недоступен</span>} />
-</MediaCacheProvider>;
+// EN: Create once in the browser application's composition root.
+// RU: Создайте один раз в точке сборки браузерного приложения.
+const cache = createHttpMediaCache({
+  url: ({ key }) => `/api/media/${encodeURIComponent(key)}`,
+});
+
+export function Attachments({ accountId }: { accountId: string }) {
+  return <MediaCacheProvider cache={cache} namespace={accountId}>
+    <MediaGallery items={[
+      { id: 'photo', mediaKey: 'photo:42:v3', alt: 'Эскиз проекта' },
+      { id: 'voice', mediaKey: 'voice:19:v1', kind: 'audio', alt: 'Голосовое вложение' },
+    ]} language="ru" />
+  </MediaCacheProvider>;
+}
 ```
 
-Расположите локальные checkout browser-media-cache и browser-media-cache-react рядом и выполните из второго:
+Бэкенд аутентифицирует запросы и проверяет доступ к `/api/media/:key`. Профиль по умолчанию ограничивает каждый HTTP-ответ 8 MiB, всю загрузку — 30 секундами. [Полный пример](examples/AttachmentGallery.tsx) содержит создание кэша, URL аккаунта, бизнес-метаданные и очистку при выходе; [руководство](docs/0.1.0/application.ru.md) разбирает каждый шаг.
 
-```sh
-npm run bootstrap
-npm test
-npm run demo
-npm run test:package
+## Начать с одного превью
+
+```tsx
+<MediaPreview mediaKey="photo:42:v3" alt="Эскиз проекта" language="ru" />
 ```
 
-Bootstrap устанавливает зависимости по lockfile, собирает checkout ядра, упаковывает и устанавливает его локальный артефакт. Другой путь задаётся через MEDIA_CACHE_SOURCE. Публикация пакетов в npm для этого не требуется. В metadata peer-зависимостей сохраняются semver-диапазоны без локальных путей. Обычный npm ci сам по себе не устанавливает неопубликованный core peer.
+Внутри того же provider компонент покажет загрузку, ошибку с повтором, отмену и возобновление. `kind="audio"` или `kind="video"` включает нативные контролы без autoplay. [Состояния и ограничения кодеков](docs/0.1.0/application.ru.md#одно-превью-и-его-состояния) · [Полный исходник галереи](examples/AttachmentGallery.tsx).
 
-Для приложения упакуйте оба собранных репозитория и установите два архива вместе с React и React DOM. Точная последовательность — в [руководстве по установке и примерам](docs/0.1.0/ru.md#локальная-установка).
+## Вывести свою коллекцию вложений
 
-Provider не уничтожает чужой кэш и не очищает хранилище автоматически. Null отключает загрузку. SSR выводит loading/idle fallback без получения ресурса. Активные медиа могут превышать мягкий бюджет ядра; кэш содержит целые Blob, поэтому подходит для ограниченных по размеру аватаров и превью. Ошибки декодирования изображения приходят в обычный onError; errorFallback обрабатывает ошибки получения и загрузки ресурса ядром.
+```tsx
+<MediaGallery items={attachments} language="ru" />
+```
 
-Исходники и примеры доступны в этом репозитории. Собирайте и устанавливайте локальные артефакты по руководству ниже; публикация npm пока не выполнена. Текущие результаты CI доступны во вкладке Actions.
+У элемента задаются стабильный `id`, `mediaKey`, `alt`, необязательные `title` и `kind`. Совпадающие ключи медиа разделяют загрузку; отмена у карточек независимая. Раскладка подстраивается под доступную ширину. [Данные и общие загрузки](docs/0.1.0/application.ru.md#ваши-данные-и-общие-загрузки) · [Полный исходник](examples/AttachmentGallery.tsx).
 
-[Руководство RU](docs/0.1.0/ru.md) · [Все версии](docs/index.md) · [Проверки](docs/VERIFICATION.md) · [MIT](LICENSE)
+## Сохранить свой дизайн
+
+```tsx
+<MediaBoundary mediaKey="notes:v2">
+  {resource => <a href={resource.url} download>Скачать заметки</a>}
+</MediaBoundary>
+```
+
+`CachedImage`, `MediaBoundary` и `useCachedMedia` доступны для собственных заглушек и UI. [Каждый примитив в действии](docs/0.1.0/visuals.ru.md) · [Полный пример собственного UI](examples/Gallery.tsx).
+
+Превью используют готовые Blob; это не потоковые плееры больших файлов. Поддержку кодеков определяет браузер. При ошибке декодирования кнопка **Повторить отображение** использует те же байты; исправленный файл загружается с новым версионированным ключом или после явной инвалидации приложением. Provider не уничтожает чужой кэш и не очищает хранилище аккаунта автоматически. [Аккаунты и ошибки](docs/0.1.0/application.ru.md#время-жизни-аккаунта) · [Вся документация](docs/index.md) · [MIT](LICENSE).
 
 </details>

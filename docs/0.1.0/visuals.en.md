@@ -2,7 +2,9 @@
 
 [← Guide](en.md) · [RU](visuals.ru.md) · [API reference](reference.en.md) · [Versions](../index.md) · [README](../../README.md)
 
-Four recordings show every runtime export from [src/index.tsx](https://github.com/dlorian59/browser-media-cache-react/blob/main/src/index.tsx). These are actual components running in Chromium, with local Blob fixtures and a deliberate 1.2-second loader delay. Counts come from `MediaCache.inspect()` and the fixture loader. They are observations of this example, not network benchmarks. No remote service, authentication or persistent storage is involved.
+Four recordings show the original four runtime exports from [src/index.tsx](https://github.com/dlorian59/browser-media-cache-react/blob/main/src/index.tsx). These are actual components running in Chromium, with local Blob fixtures and a deliberate 1.2-second loader delay. Counts come from `MediaCache.inspect()` and the fixture loader. They are observations of this example, not network benchmarks. No remote service, authentication or persistent storage is involved.
+
+[Ready MediaGallery + MediaPreview: integration, shared recording and source](application.en.md).
 
 ## Try the examples
 

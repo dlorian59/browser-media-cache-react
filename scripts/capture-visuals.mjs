@@ -28,15 +28,19 @@ try {
   browser = await chromium.launch({ headless: true,
     ...(process.env.BROWSER_EXECUTABLE_CHROMIUM ? { executablePath: process.env.BROWSER_EXECUTABLE_CHROMIUM } : {}),
   });
-  for (const language of ['en', 'ru']) for (const scene of ['provider', 'image', 'boundary', 'hook']) {
+  const scenes = process.env.MEDIA_CAPTURE_SCENES?.split(',') ?? ['provider', 'image', 'boundary', 'hook', 'gallery'];
+  for (const language of ['en', 'ru']) for (const scene of scenes) {
     const name = `${scene}.${language}`;
     const directory = resolve(output, name);
     await mkdir(directory, { recursive: true });
-    const page = await browser.newPage({ viewport: { width: 832, height: 800 }, deviceScaleFactor: 1 });
+    const page = await browser.newPage({ viewport: { width: 832, height: scene === 'gallery' ? 900 : 800 }, deviceScaleFactor: 1 });
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
-    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
-    await page.goto(`${url}/visuals?scene=${scene}&lang=${language}`);
+    page.on('console', message => {
+      if (message.type() === 'error' && !(scene === 'gallery' && message.text().includes('503'))) errors.push(message.text());
+    });
+    if (scene === 'gallery') await page.request.post(`${url}/api/fixture/reset`);
+    await page.goto(scene === 'gallery' ? `${url}/starter?lang=${language}` : `${url}/visuals?scene=${scene}&lang=${language}`);
     await page.locator('main').waitFor();
     const frames = [];
     async function record(milliseconds) {
@@ -58,7 +62,37 @@ try {
         [...document.querySelectorAll('main img')].every(image => image.complete && image.naturalWidth > 0), count);
     }
     await record(650);
-    if (scene === 'provider') {
+    if (scene === 'gallery') {
+      const cards = page.locator('figure');
+      await click('show'); await record(500);
+      await cards.nth(2).getByRole('button', { name: language === 'ru' ? 'Отменить' : 'Cancel', exact: true }).click();
+      await record(1200);
+      assert.equal(await page.locator('[data-media-state="error"]').count(), 2);
+      assert.equal(await cards.nth(2).locator('[data-media-state="cancelled"]').count(), 1);
+      await cards.nth(0).getByRole('button', { name: language === 'ru' ? 'Повторить' : 'Retry', exact: true }).click();
+      await cards.nth(1).getByRole('button', { name: language === 'ru' ? 'Повторить' : 'Retry', exact: true }).click();
+      await record(1600); await readyImages(2);
+      const shared = await page.locator('main img').first().getAttribute('src');
+      assert.equal(await page.locator('main img').last().getAttribute('src'), shared);
+      await cards.nth(2).getByRole('button', { name: language === 'ru' ? 'Загрузить снова' : 'Load again', exact: true }).click();
+      await record(1500);
+      await page.waitForFunction(() => document.querySelector('audio')?.readyState >= 1);
+      await page.locator('audio').click({ position: { x: 24, y: 25 } });
+      await page.waitForFunction(() => document.querySelector('audio')?.currentTime > 0);
+      await record(700);
+      await page.screenshot({ path: resolve(assets, `${name}.png`) });
+      const before = await (await page.request.get(`${url}/api/fixture/stats`)).json();
+      assert.equal(before['alice/landscape:v1'], 2);
+      await click('show'); await record(650);
+      await page.waitForFunction(() => document.querySelector('[data-owners]')?.textContent === '0');
+      await click('show'); await record(700); await readyImages(2);
+      assert.deepEqual(await (await page.request.get(`${url}/api/fixture/stats`)).json(), before);
+      await click('account');
+      assert.equal(await page.locator('main img').evaluateAll((images, old) => images.some(image => image.src === old), shared), false);
+      await record(1600); await readyImages(2);
+      assert.notEqual(await page.locator('main img').first().getAttribute('src'), shared);
+      await record(650);
+    } else if (scene === 'provider') {
       await click('mount'); await record(1600); await readyImages(2);
       await metric('loads', 1); await metric('owners', 2);
       const original = await page.locator('main img').first().getAttribute('src');

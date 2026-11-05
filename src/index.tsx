@@ -1,13 +1,16 @@
 'use client';
 
-import { createContext, forwardRef, useContext, useMemo } from "react";
+export { MediaPreview, MediaGallery } from './preview.js';
+export type { MediaKind, MediaLanguage, MediaPreviewProps, MediaGalleryProps, MediaGalleryItem } from './preview.js';
+
+import { forwardRef, useMemo } from "react";
 import type { ImgHTMLAttributes, ReactNode } from "react";
-import type { MediaCache, MediaResource } from "@59alex/browser-media-cache";
+import type { MediaResource } from "@59alex/browser-media-cache";
 import { useMedia } from "@59alex/browser-media-cache/react";
 import type { MediaState } from "@59alex/browser-media-cache/react";
 
-interface Scope { readonly cache: MediaCache; readonly namespace: string }
-const Context = createContext<Scope | undefined>(undefined);
+import { MediaContext, useMediaScope } from './context.js';
+import type { Scope } from './context.js';
 
 export interface MediaCacheProviderProps extends Scope { readonly children: ReactNode }
 
@@ -15,13 +18,12 @@ export interface MediaCacheProviderProps extends Scope { readonly children: Reac
 export function MediaCacheProvider({ cache, namespace, children }: MediaCacheProviderProps): ReactNode {
   if (typeof namespace !== "string" || namespace.length === 0) throw new TypeError("namespace must be a non-empty string");
   const scope = useMemo(() => ({ cache, namespace }), [cache, namespace]);
-  return <Context.Provider value={scope}>{children}</Context.Provider>;
+  return <MediaContext.Provider value={scope}>{children}</MediaContext.Provider>;
 }
 
 /** Use the core hook unchanged: effect acquisition, generation guards and cleanup stay in the core. */
 export function useCachedMedia(mediaKey: string | null): MediaState {
-  const scope = useContext(Context);
-  if (!scope) throw new Error("useCachedMedia requires MediaCacheProvider");
+  const scope = useMediaScope();
   return useMedia(scope.cache, scope.namespace, mediaKey);
 }
 

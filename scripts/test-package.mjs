@@ -54,7 +54,8 @@ assert.equal(cache.inspect().activeHandles,0);cache.dispose();
   symlinkSync(resolve('node_modules/csstype'),join(consumer,'node_modules/csstype'));
   writeFileSync(join(consumer,'consumer.tsx'),`
 import { MediaCache } from '@59alex/browser-media-cache';
-import { CachedImage, MediaBoundary, MediaCacheProvider } from '@59alex/browser-media-cache-react';
+import { CachedImage, MediaBoundary, MediaCacheProvider, MediaGallery, MediaPreview } from '@59alex/browser-media-cache-react';
+import { AttachmentGallery, createAttachmentMediaCache } from './node_modules/@59alex/browser-media-cache-react/examples/AttachmentGallery.js';
 const cache=new MediaCache({load:async()=>new Blob()});
 const tree=<MediaCacheProvider cache={cache} namespace="account"><CachedImage mediaKey="avatar" alt="Portrait" width={32}/><MediaBoundary mediaKey={null}>{resource=><a href={resource.url}>Download</a>}</MediaBoundary></MediaCacheProvider>;
 // @ts-expect-error alt is required
@@ -62,6 +63,10 @@ const missingAlt=<CachedImage mediaKey="avatar"/>;
 // @ts-expect-error src cannot bypass cache ownership
 const foreignSource=<CachedImage mediaKey="avatar" alt="A" src="https://example.test/a"/>;
 void [tree,missingAlt,foreignSource];
+const httpCache=createAttachmentMediaCache();
+const copiedExample=<AttachmentGallery cache={httpCache} accountId="account" language="ru"/>;
+const readyUi=<MediaCacheProvider cache={httpCache} namespace="account"><MediaGallery items={[{id:'photo',mediaKey:'photo:v1',alt:'Photo'}]}/><MediaPreview mediaKey="audio:v1" alt="Audio" kind="audio"/></MediaCacheProvider>;
+void [copiedExample,readyUi];
 `);
   execFileSync(resolve('node_modules/.bin/tsc'),['--noEmit','--strict','--module','NodeNext','--target','ES2022','--jsx','react-jsx','--lib','ES2022,DOM','consumer.tsx'],{cwd:consumer,stdio:'inherit'});
   console.log(`Clean artifact consumer: SSR, strict types, required alt, forbidden src passed (${adapter.files.length} files).`);

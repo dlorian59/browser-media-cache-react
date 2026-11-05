@@ -2,6 +2,8 @@
 
 [← README](../README.md)
 
+Start with an existing application / Подключение к существующему приложению: [EN](0.1.0/application.en.md) · [RU](0.1.0/application.ru.md).
+
 | Version / Версия | English | Русский |
 |---|---|---|
 | 0.1.0 | [Practical guide](0.1.0/en.md) | [Практическое руководство](0.1.0/ru.md) |

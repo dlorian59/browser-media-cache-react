@@ -1,9 +1,12 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { serveMediaFixture } from '../demo/media-fixture.mjs';
 const routes = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/bundle.js',['bundle.js','text/javascript']],
-  ['/visuals', ['visuals.html','text/html; charset=utf-8']], ['/visuals.js',['visuals.js','text/javascript']]]);
+  ['/visuals', ['visuals.html','text/html; charset=utf-8']], ['/visuals.js',['visuals.js','text/javascript']],
+  ['/starter', ['starter.html','text/html; charset=utf-8']], ['/starter.js',['starter.js','text/javascript']]]);
 const server = createServer(async (request,response) => {
   const path = new URL(request.url, 'http://localhost').pathname;
+  if (serveMediaFixture(request, response, path)) return;
   if (path === '/favicon.ico') { response.writeHead(204); response.end(); return; }
   const route = routes.get(path);
   if (!route) { response.writeHead(404); response.end(); return; }

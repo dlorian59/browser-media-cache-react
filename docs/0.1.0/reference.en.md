@@ -4,6 +4,31 @@
 
 [Visual component guide](visuals.en.md) — integration code, recordings and static frames for every public component and hook.
 
+## Ready previews and galleries
+
+[Application walkthrough and recording](application.en.md) · [Complete AttachmentGallery source](../../examples/AttachmentGallery.tsx)
+
+Additional root exports: `MediaPreview`, `MediaGallery`; types `MediaKind`, `MediaLanguage`, `MediaPreviewProps`, `MediaGalleryProps`, `MediaGalleryItem`. Both components use the existing provider/hook ownership; there is no second cache engine.
+
+| MediaPreview prop | Default | Contract |
+|---|---|---|
+| `mediaKey` | Required string or null | Null is idle. Changed namespace/key resets this card's retry/cancel state. |
+| `alt` | Required string | Image alt, audio/video aria-label, and container description. |
+| `kind` | `image` | `image`, `audio`, `video`; native controls on players, preload metadata, no autoplay. |
+| `language` | `en` | `en` or `ru` for built-in status and button text. |
+| `className`, `style` | None | Outer preview surface; inline defaults provide a finite stable placeholder area. |
+
+Loading has Cancel; cancellation releases only this owner and shows Load again. Acquisition error has Retry, remounting only this owner for another acquisition. Native decode failure has Retry display, which recreates the native element using cached bytes. It does not silently invalidate other owners. Corrected media should use a new versioned key. These controls require the provider even when the key is null. No autoplay, streaming decode, upload, codec conversion or automatic retry is added.
+
+| MediaGallery prop | Default | Contract |
+|---|---|---|
+| `items` | Required readonly array | Item: unique stable `id`, `mediaKey`, required `alt`, optional `title` and `kind`. Input order is retained; keys may repeat/share one resource. |
+| `language` | `en` | Labels for child previews and the empty-collection message. |
+| `className`, `style` | None | Outer responsive grid (or the empty paragraph); style can override grid columns/gaps. |
+
+All cards remain mounted while listed; this is not virtualization or delayed acquisition. Native `preload=metadata` does not defer the cache's full-Blob download. Active resources can exceed a soft cache budget. Native codec support is the browser's responsibility. The HTTP factory/profile is configured in the application, not implicitly created by the React provider.
+
+
 ## Capabilities and source examples
 
 | Mechanism | Source | Boundary |
@@ -18,7 +43,7 @@
 
 ## Imports and compatibility
 
-The root entry exports MediaCacheProvider, useCachedMedia, MediaBoundary, CachedImage;
+The primitive API exports MediaCacheProvider, useCachedMedia, MediaBoundary, CachedImage;
 types MediaCacheProviderProps, MediaBoundaryProps, CachedImageProps, MediaResource
 and MediaState. /package.json exports metadata. The entry retains use client.
 There are no CSS files, automatic loaders, global caches, timers or React-19-only
@@ -27,8 +52,7 @@ exports in this adapter. Core ownership is delegated to its existing useMedia.
 Peers: @59alex/browser-media-cache ^0.1.0, React ^18.3.1 or ^19.0.0. Output: strict
 TypeScript declarations and ESM/ES2022. Development: Node 24, TypeScript 7.0.2.
 Install the core and adapter tarballs together as described in the [guide](en.md#local-installation).
-React DOM belongs to the host application. React 19.3.1, Chromium 156 and Firefox
-156 are tested; React 18, Safari, mobile browsers and framework-specific hydration are not.
+React DOM belongs to the host application. React 19.3.1 passes the lifecycle/error/audio checks in Chromium 156 and Firefox 158. A clean React 18.3.1 consumer passes SSR and Chromium StrictMode gallery sharing/unmount checks. Safari, mobile browsers and framework-specific hydration are not tested; see the [verification scope](../VERIFICATION.md).
 
 ## Provider and hook
 
