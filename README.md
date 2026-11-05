@@ -7,11 +7,16 @@
 
 Render shared avatars and attachment previews without managing object URLs in every component. A provider supplies an application-owned cache and account namespace. CachedImage, MediaBoundary and useCachedMedia reuse the existing core hook for acquisition, cancellation and cleanup.
 
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/0.1.0/visuals/provider.en.png"><img src="docs/0.1.0/visuals/provider.en.gif" width="832" alt="Two real React previews share one media load, release owners independently and reuse the cached resource."></picture>
+
+One load for two consumers. The recording shows unmount, cache reuse and account replacement using actual components with local fixtures. [Static frame](docs/0.1.0/visuals/provider.en.png) · [Every component in motion, with integration code](docs/0.1.0/visuals.en.md)
+
 | Need | API and example |
 |---|---|
-| Share one avatar between a profile and its attachment preview | [CachedImage gallery](examples/Gallery.tsx) |
-| Render audio, video, a download link or custom content | [MediaBoundary render props](examples/Gallery.tsx) |
-| Use custom rendering with the same lifecycle | [useCachedMedia / MediaStatus](examples/Gallery.tsx) |
+| Provide scope and share ownership between children | [MediaCacheProvider recording + code](docs/0.1.0/visuals.en.md#mediacacheprovider) |
+| Share one avatar between a profile and its attachment preview | [CachedImage recording + code](docs/0.1.0/visuals.en.md#cachedimage) · [Gallery](examples/Gallery.tsx) |
+| Render audio, video, a download link or custom content | [MediaBoundary recording + code](docs/0.1.0/visuals.en.md#mediaboundary) · [Gallery](examples/Gallery.tsx) |
+| Use custom rendering with the same lifecycle | [useCachedMedia recording + code](docs/0.1.0/visuals.en.md#usecachedmedia) · [MediaStatus](examples/Gallery.tsx) |
 | Configure authenticated loading and persistence | [Application-owned cache](examples/create-cache.ts) |
 | Change accounts and remove persisted account media | [Scope and logout guide](docs/0.1.0/en.md#scope-and-logout) |
 | Defer result rendering while typing | [SearchableGallery](examples/SearchableGallery.tsx) |
@@ -59,11 +64,16 @@ Source and examples are available in this repository. Build and install the loca
 
 Общие аватары и превью вложений без ручного управления object URL в каждом компоненте. Provider передаёт принадлежащий приложению кэш и namespace аккаунта. CachedImage, MediaBoundary и useCachedMedia используют существующий hook ядра для получения ресурса, отмены и очистки.
 
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="docs/0.1.0/visuals/provider.ru.png"><img src="docs/0.1.0/visuals/provider.ru.gif" width="832" alt="Два React-превью разделяют одну загрузку, независимо освобождают владение и повторно используют ресурс из кэша."></picture>
+
+Одна загрузка для двух потребителей. Запись настоящих компонентов с локальными данными показывает размонтирование, повторное использование кэша и смену аккаунта. [Статичный кадр](docs/0.1.0/visuals/provider.ru.png) · [Все компоненты в действии с кодом интеграции](docs/0.1.0/visuals.ru.md)
+
 | Задача | API и пример |
 |---|---|
-| Разделить аватар между профилем и превью вложения | [Галерея CachedImage](examples/Gallery.tsx) |
-| Вывести аудио, видео, ссылку скачивания или свой элемент | [Render props MediaBoundary](examples/Gallery.tsx) |
-| Написать своё отображение с тем же lifecycle | [useCachedMedia / MediaStatus](examples/Gallery.tsx) |
+| Задать область и разделить владение между потомками | [Запись MediaCacheProvider + код](docs/0.1.0/visuals.ru.md#mediacacheprovider) |
+| Разделить аватар между профилем и превью вложения | [Запись CachedImage + код](docs/0.1.0/visuals.ru.md#cachedimage) · [Gallery](examples/Gallery.tsx) |
+| Вывести аудио, видео, ссылку скачивания или свой элемент | [Запись MediaBoundary + код](docs/0.1.0/visuals.ru.md#mediaboundary) · [Gallery](examples/Gallery.tsx) |
+| Написать своё отображение с тем же lifecycle | [Запись useCachedMedia + код](docs/0.1.0/visuals.ru.md#usecachedmedia) · [MediaStatus](examples/Gallery.tsx) |
 | Настроить загрузку с аутентификацией и хранилище | [Кэш приложения](examples/create-cache.ts) |
 | Сменить аккаунт и удалить его сохранённые медиа | [Область и logout](docs/0.1.0/ru.md#область-и-logout) |
 | Отложить render результатов во время ввода | [SearchableGallery](examples/SearchableGallery.tsx) |

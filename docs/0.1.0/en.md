@@ -2,6 +2,8 @@
 
 [← Versions](../index.md) · [EN](en.md) · [RU](ru.md) · [README](../../README.md)
 
+[Visual component guide](visuals.en.md) — integration code, recordings and static frames for every public component and hook.
+
 [Complete props, defaults, state semantics and troubleshooting](reference.en.md)
 
 Use this adapter when a React screen repeats the same avatar or attachment preview and needs predictable cleanup on navigation. Keep application policy in one MediaCache; components reuse the core's existing useMedia hook. There is no second URL cache, loader scheduler or persistence implementation.

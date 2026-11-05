@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React media lifecycle — interactive example</title>
+<style>
+  :root{font:16px/1.5 system-ui,sans-serif;color:#25323e;background:#f2f5f7;color-scheme:light}
+  *{box-sizing:border-box}body{margin:0;padding:24px}main{max-width:832px;margin:auto;background:white;border:1px solid #d7e0e5;border-radius:16px;padding:28px}
+  header p{margin:8px 0;color:#516170;max-width:690px}.eyebrow{font-size:13px;letter-spacing:.03em}header code{color:#27655d;font-weight:600;font-size:14px}
+  h1{font-size:28px;line-height:1.25;margin:12px 0}h2{font-size:14px;margin:0 0 12px;color:#516170;font-weight:500}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid #e2e8ed;margin:22px 0;padding:15px 0;gap:12px}.metrics dt{font-size:13px;color:#516170}.metrics dd{font-size:26px;font-weight:650;margin:2px 0 0;font-variant-numeric:tabular-nums}
+  .scope{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:14px;color:#516170}.previews{display:grid;grid-template-columns:1fr 1fr;gap:20px}.preview{min-width:0}.preview img{width:100%;height:180px;object-fit:cover;display:block;border-radius:8px}
+  .placeholder{background:#f5f7f9;border:1px dashed #c1cdd4;color:#516170;border-radius:8px;min-height:180px;display:flex;gap:10px;align-items:center;justify-content:center;padding:20px;text-align:center}
+  .state-mark{width:10px;height:10px;border-radius:50%;background:#8698a5;flex:none}.loading .state-mark{background:#27796e;animation:pulse 1s ease-in-out infinite}.error{color:#9b332e;background:#fff7f6;border-color:#e5bbb7}.error .state-mark{background:#b9473d}
+  .single-preview{min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center}.single-preview>.placeholder,.retry-panel{width:100%}.single-preview img{max-width:100%;object-fit:cover;border-radius:8px}.decode{font-size:13px;margin:10px 0;color:#516170}
+  .retry-panel{text-align:center}.retry-panel .placeholder{min-height:170px;margin-bottom:12px}.download{text-align:center}.download a{display:block;color:#25685f;font-size:20px;font-weight:600;margin-top:12px}.download p{color:#516170;font-size:14px}.file-icon{display:inline-flex;align-items:center;justify-content:center;width:68px;height:80px;border:1px solid #bdcfc9;border-radius:8px;color:#27655d;background:#edf5f2;font-weight:650}
+  .hook-ready{display:flex;align-items:center;gap:26px}.hook-ready p{margin:6px 0;color:#516170;font-size:14px}.hook-ready code{font-size:13px}.hook-ready strong{color:#27655d}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}button{font:inherit;font-size:14px;border:1px solid #bbc9d2;border-radius:7px;background:#fff;color:#25323e;min-height:42px;padding:8px 14px;cursor:pointer}button:hover{background:#f0f5f5}button:focus-visible{outline:3px solid #27796e;outline-offset:3px}button:disabled{opacity:.5;cursor:default}.controls button:first-child{background:#edf5f2;border-color:#98bdb3;color:#24594f}
+  footer{margin-top:22px;border-top:1px solid #e2e8ed;padding-top:14px;color:#516170;font-size:12px}
+  @keyframes pulse{50%{opacity:.3}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  @media(max-width:580px){body{padding:12px}main{padding:18px}h1{font-size:24px}.previews{grid-template-columns:1fr}.scope{flex-wrap:wrap}.metrics dt{font-size:12px}.hook-ready{flex-direction:column}}
+</style>
+<div id="app"></div><script type="module" src="/visuals.js"></script>
+</html>

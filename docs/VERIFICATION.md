@@ -12,6 +12,34 @@ Both headless browsers verified filtering, immediate account/item replacement,
 explicit retry, image ref and native load handling alongside the seven existing
 lifecycle scenarios. No FPS, response-time or comparative performance claim is made.
 
+## OSS-011 visual guide verification · 2026-11-05
+
+All four runtime exports are demonstrated through actual React components:
+MediaCacheProvider (shared children), CachedImage, MediaBoundary and useCachedMedia
+(custom UI). Eight recordings cover four scenes in EN/RU; each has a static PNG
+and a reduced-motion source. Chromium 156.0.8078.4 captured the 832 × 800 example.
+GIF sizes are 49,370–100,779 bytes. UI assertions passed for loader calls, owner
+counts, shared object URLs, idle reuse, namespace replacement, decoded images,
+explicit retry, downloaded Blob content and absence of browser errors.
+
+`npm run docs:capture` reproduces the fixtures and recordings. Results and raw
+frames are in ignored `output/playwright/media-visuals/`. The source uses local
+SVG/text Blobs, a 1.2-second fixture delay and one intentional notes failure;
+it is not evidence of production network performance or persistent-cache behavior.
+
+Build, strict example types, both SSR tests and the isolated packed consumer passed.
+The artifact contains 39 files; 186 relative Markdown links/anchors resolved during
+the package check, and a separate check found no missing Markdown/image targets.
+The existing browser suite also passed all seven lifecycle scenarios and example
+controls in Chromium 156.0.8078.4 and the installed Firefox 158.0, with 4/4
+object URLs released in each. Firefox used an explicit executable override.
+Source-only demo/capture links point to the repository because those tools are
+intentionally excluded from the npm artifact. No adapter runtime API changed.
+
+Все три компонента и hook показаны в восьми записях на двух языках. Проверены
+реальные состояния UI, разделение ресурса, повторное использование и retry.
+Статичные PNG доступны для уменьшения движения; данные и задержка — тестовые.
+
 | Check | Observed result |
 |---|---|
 | Strict TypeScript build and example compilation | Pass; public declarations, Gallery.tsx, create-cache.ts, SearchableGallery.tsx and ImageStates.tsx |

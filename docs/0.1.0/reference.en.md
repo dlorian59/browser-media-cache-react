@@ -2,6 +2,8 @@
 
 [← Guide](en.md) · [RU](reference.ru.md) · [Versions](../index.md) · [README](../../README.md)
 
+[Visual component guide](visuals.en.md) — integration code, recordings and static frames for every public component and hook.
+
 ## Capabilities and source examples
 
 | Mechanism | Source | Boundary |

@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-const routes = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/bundle.js',['bundle.js','text/javascript']]]);
+const routes = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/bundle.js',['bundle.js','text/javascript']],
+  ['/visuals', ['visuals.html','text/html; charset=utf-8']], ['/visuals.js',['visuals.js','text/javascript']]]);
 const server = createServer(async (request,response) => {
   const path = new URL(request.url, 'http://localhost').pathname;
   if (path === '/favicon.ico') { response.writeHead(204); response.end(); return; }
