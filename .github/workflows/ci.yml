@@ -11,7 +11,7 @@ jobs:
           path: browser-media-cache-react
       - uses: actions/checkout@v4
         with:
-          repository: 59Alex/browser-media-cache
+          repository: dlorian59/browser-media-cache
           path: browser-media-cache
       - uses: actions/setup-node@v4
         with:

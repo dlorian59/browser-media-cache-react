@@ -78,7 +78,7 @@ Components. Создавайте кэш в клиентском коде при�
 
 SSR выводит loading/idle без получения медиа, создания URL и обращения к CacheStorage. На сервере используйте состояние приложения в пределах запроса, на клиенте — стабильный кэш. Браузерные object URL не передаются через HTML. Fallback должен быть одинаковым на сервере и первом клиентском render.
 
-Повторный запуск effects в development StrictMode обрабатывается hook ядра. Проверки покрывают общую загрузку, частичный unmount, смену аккаунта, logout, ошибки, null и опоздавшие результаты. Функциональное демо находится локально в demo/main.jsx; его [ссылка на GitHub](https://github.com/59Alex/browser-media-cache-react/blob/main/demo/main.jsx) станет доступна после создания репозитория.
+Повторный запуск effects в development StrictMode обрабатывается hook ядра. Проверки покрывают общую загрузку, частичный unmount, смену аккаунта, logout, ошибки, null и опоздавшие результаты. Функциональное демо находится локально в demo/main.jsx; его [ссылка на GitHub](https://github.com/dlorian59/browser-media-cache-react/blob/main/demo/main.jsx) станет доступна после создания репозитория.
 
 ## Попробовать и проверить
 

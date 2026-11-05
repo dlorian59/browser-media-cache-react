@@ -78,7 +78,7 @@ required, and a specific framework integration has not been tested.
 
 SSR renders loading/idle fallbacks without acquiring media, creating URLs or touching CacheStorage. Use request-scoped application state on the server and a stable client cache during hydration. Browser object URLs are not serialized into HTML. Loading and idle fallbacks must be deterministic on the server and first client render.
 
-React development StrictMode effect replay is handled by the core hook. The runnable checks exercise shared ownership, partial unmount, account replacement, logout, failures, null keys and ignored old completions. [Functional demo source](https://github.com/59Alex/browser-media-cache-react/blob/main/demo/main.jsx) is also present locally at demo/main.jsx; remote availability awaits repository creation.
+React development StrictMode effect replay is handled by the core hook. The runnable checks exercise shared ownership, partial unmount, account replacement, logout, failures, null keys and ignored old completions. [Functional demo source](https://github.com/dlorian59/browser-media-cache-react/blob/main/demo/main.jsx) is also present locally at demo/main.jsx; remote availability awaits repository creation.
 
 ## Try and verify
 
