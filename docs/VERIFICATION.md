@@ -22,6 +22,8 @@ The existing browser suite passes in Chromium156 and Firefox158 with its seven l
 
 An additional clean consumer installed the current core/adapter tarballs with React 18.3.1 and React DOM 18.3.1. SSR emitted idle/loading UI without acquisition. Headless Chromium verified StrictMode, two decoded images sharing one HTTP request and object URL, then zero owners and zero retained bytes after unmount with the transient profile. This is React 18 gallery/lifecycle coverage; the full error/audio matrix above runs with React 19.3.1.
 
+CI follow-up: Firefox 157 (Playwright build 1555) can stall unmuted playback when no audio output service is available. The lifecycle check now starts muted playback through the native play() API, then still requires real currentTime progression and verifies pause/source removal on unmount. With PULSE_SERVER pointing to a nonexistent socket, the complete browser suite passed in Chromium 156 and Firefox 157. This verifies decoding, playback progression and cleanup, not audible sound quality or native-control button geometry. No component runtime change or increased timeout was needed.
+
 Готовые карточки проверены настоящими действиями: отмена, сетевой retry, общий ресурс, воспроизведение аудио и смена аккаунта. Повтор отображения повреждённого Blob не обещает новую сетевую загрузку. Нативные кодеки и production-авторизация остаются за браузером/приложением.
 
 

@@ -65,7 +65,9 @@ try {
       await page.waitForFunction(() => document.querySelectorAll('main img').length === 2 && [...document.querySelectorAll('main img')].every(image => image.complete && image.naturalWidth > 0));
       assert.equal(await page.getByRole('button', { name: 'Retry display', exact: true }).count(), 0);
       await page.waitForFunction(() => document.querySelector('audio')?.readyState >= 1);
-      await page.locator('audio').click({ position: { x: 24, y: 25 } });
+      // EN: Exercise decoding/playback cleanup without requiring an audio device or native-control geometry.
+      // RU: Проверяем декодирование и остановку без зависимости от аудиоустройства и геометрии controls.
+      await page.locator('audio').evaluate(async player => { player.muted = true; await player.play(); });
       await page.waitForFunction(() => document.querySelector('audio')?.currentTime > 0);
       const detachedPlayer = await page.locator('audio').elementHandle();
       await page.getByRole('button', { name: 'Hide attachments', exact: true }).click();
